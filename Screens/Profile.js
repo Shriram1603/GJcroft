@@ -13,9 +13,7 @@ import {
 import firestore from '@react-native-firebase/firestore';
 
 
-const height = 164;
-const weight = 59;
-const bmi = (weight / (height / 100)) ^ 2;
+
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -137,7 +135,7 @@ const Profile = ({navigation}) => {
               fontSize: 18,
               color: 'black',
             }}>
-            {bmi}
+            {Math.round(data.weight / (data.height/100)^2)}
           </Text>
         </View>
       </View>
