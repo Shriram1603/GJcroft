@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity,Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 // import CountDown from 'react-native-countdown-component'
 import CountDownTimer from 'react-native-countdown-timer-hooks';
@@ -80,10 +80,19 @@ const Timer = () => {
 
   return (
     <View style={styles.container}>
+       <View style={styles.imgview}>
+        <Image source={require('../assets/Achieve.jpg')} style={styles.img} />
+      </View>
+      <View style={styles.Hei}>
+        <Text style={styles.Heitxt}>Your Goal's Just Ahead ,Hang On Tight!</Text>
+      </View>
+
+
+
       <CountDownTimer
-        size={30}
-        timestamp={2}
-        timerCallback={() => timerCallbackFunc()}
+        size={30}         //once The Timer Ends it Would mean you have completed the workot and Your bunt calaories will be updated
+        timestamp={3}    //Note that the timer is set a 3Sec for Your testing convinence to increase the timer change the timestamp value in this line (in seconds)
+        timerCallback={() => timerCallbackFunc()}    
         digitStyle={{
           backgroundColor: '#FFF',
           borderWidth: 2,
@@ -134,9 +143,28 @@ export default Timer;
 
 const styles = StyleSheet.create({
   container: {
-    // flex:1,
+    flex:1,
+    backgroundColor:"white",
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
+  },
+  imgview: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  img: {
+    height: 400,
+    width: 350,
+    resizeMode: "stretch",
+  },
+  Hei: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  Heitxt: {
+    fontSize: 22,
+    marginTop: 40,
+    margin:20,
   },
 })
