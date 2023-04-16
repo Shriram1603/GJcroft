@@ -24,6 +24,47 @@ const Profile = ({navigation}) => {
     }
   };
 
+  const [uid, setUid] = React.useState('');
+  const [data, setdata] = React.useState('');
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('uid').then(value => {
+        setUid(value);
+        addProduct('');
+      });
+    } catch (e) {
+      // error reading value
+      console.log('Error', e.message);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+    addProduct()
+   
+  }, []);
+
+  const addProduct = async data => {
+    console.log(uid);
+   
+    console.log(data)
+    try {
+      await firestore()
+        .collection('Users')
+        .doc(uid)
+        .get()
+        .then(documentSnapshot => {
+          if (documentSnapshot.exists) {
+            console.log('User data: ', documentSnapshot.data());
+            setdata(documentSnapshot.data())
+          }
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={{color: 'black', fontSize: 25, fontWeight: '700'}}>
@@ -68,7 +109,7 @@ const Profile = ({navigation}) => {
               fontSize: 16,
               color: 'black',
             }}>
-            Weight : {weight} kg
+            Weight : {data} kg
           </Text>
         </View>
 

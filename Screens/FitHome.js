@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import Foundation from 'react-native-vector-icons/Foundation';
-import React,{useEffect} from 'react';
+import React, {useEffect} from 'react';
 import Motivation from '../Components/Motivation';
 import Steps from '../Components/Steps';
 import Calories from '../Components/Calories';
@@ -10,6 +10,46 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 
 const FitHome = () => {
+  const [uid, setUid] = React.useState('');
+  const [data, setdata] = React.useState('');
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('uid').then(value => {
+        setUid(value);
+        addProduct('');
+      });
+    } catch (e) {
+      // error reading value
+      console.log('Error', e.message);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+   
+   
+  }, []);
+
+  const addProduct = async data => {
+    console.log(uid);
+   
+    console.log(data)
+    try {
+      await firestore()
+        .collection('Users')
+        .doc(uid)
+        .get()
+        .then(documentSnapshot => {
+          if (documentSnapshot.exists) {
+            console.log('User data: ', documentSnapshot.data());
+            setdata(documentSnapshot.data())
+          }
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -47,7 +87,7 @@ const FitHome = () => {
         }}>
         Today's Goal
       </Text>
-      <Calories Totcalories="800" Burntcalories="460" />
+      <Calories Totcalories="800" Burntcalories={data.Calories} />
       <Steps TotSteps="10000" FinishedSteps="3000" />
     </View>
   );

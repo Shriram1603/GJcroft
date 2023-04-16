@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import React, {useEffect,useState} from 'react';
+import React, {useEffect, useState} from 'react';
 // import CountDown from 'react-native-countdown-component'
 import CountDownTimer from 'react-native-countdown-timer-hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,17 +7,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 
-
-
 const Timer = () => {
-
   const [uid, setUid] = React.useState('');
   const [data, setData] = React.useState('');
+  const [Cal, setCal] = React.useState();
 
   const getData = async () => {
     try {
       const value = await AsyncStorage.getItem('uid').then(value => {
         setUid(value);
+        addProduct('');
       });
     } catch (e) {
       // error reading value
@@ -29,37 +28,50 @@ const Timer = () => {
     getData();
   }, []);
 
+  const addProduct = async data => {
+    console.log(uid);
+    try {
+      await firestore()
+        .collection('Users')
+        .doc(uid)
+        .get()
+        .then(documentSnapshot => {
+          if (documentSnapshot.exists) {
+            setCal(documentSnapshot.data().Calories);
+          }
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
- 
   // const complete =()=>{
-    const [Cal,setCal] =  React.useState(0);
 
-    const Calories = async data => {
-      try {
-        await firestore().collection('Users').doc(uid).set(
-          {
-            Calories: data,
-          },
-          {merge: true},
-        );
-        console.log('Value Added!');
-      } catch (error) {
-        console.log(error)
-      }
-    };
+  const Calories = async data => {
+    try {
+      await firestore().collection('Users').doc(uid).set(
+        {
+          Calories: data,
+        },
+        {merge: true},
+      );
+      console.log('Value Added!');
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // }
   const navigation = useNavigation();
 
   const [isLoading, setIsLoading] = React.useState(true);
   const [timerEnd, setTimerEnd] = useState(false);
 
-  const timerCallbackFunc = (timerFlag) => {
+  const timerCallbackFunc = timerFlag => {
     // Setting timer flag to finished
-    setCal(Cal+100)
-    Calories(Cal)
+    setCal(Cal + 100);
+    Calories(Cal);
     setTimerEnd(timerFlag);
-    navigation.navigate('Exercises')
-
+    navigation.navigate('Exercises');
   };
 
   return (
@@ -73,7 +85,7 @@ const Timer = () => {
           borderWidth: 2,
           borderColor: '#1CC625',
         }}
-        digitTxtStyle={{color: '#1CC625',}}
+        digitTxtStyle={{color: '#1CC625'}}
         timeLabelStyle={{color: 'black', fontWeight: 'bold'}}
         separatorStyle={{color: '#1CC625'}}
         timeToShow={['H', 'M', 'S']}
@@ -121,6 +133,6 @@ const styles = StyleSheet.create({
     // flex:1,
     alignItems: 'center',
     justifyContent: 'center',
-    alignSelf:'center'
+    alignSelf: 'center',
   },
 });
