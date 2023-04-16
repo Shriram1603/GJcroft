@@ -28,20 +28,18 @@ const FitHome = ({navigation}) => {
   useEffect(() => {
     getData();
 
-   const unsubscribe = navigation.addListener('focus', () => {
-    getData()
-    addProduct()
-    // Screen was focused
-    // Do something
-  });
-
-
-  }, [navigation]);
+    const unsubscribe = navigation.addListener('focus', () => {
+      getData();
+      addProduct();
+      // Screen was focused
+      // Do something
+    });
+  }, [navigation, addProduct]);
 
   const addProduct = async data => {
     console.log(uid);
-   
-    console.log(data)
+
+    console.log(data);
     try {
       await firestore()
         .collection('Users')
@@ -50,7 +48,7 @@ const FitHome = ({navigation}) => {
         .then(documentSnapshot => {
           if (documentSnapshot.exists) {
             console.log('User data: ', documentSnapshot.data());
-            setdata(documentSnapshot.data())
+            setdata(documentSnapshot.data());
           }
         });
     } catch (error) {

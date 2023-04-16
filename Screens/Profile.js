@@ -35,7 +35,7 @@ const Profile = ({navigation}) => {
     try {
       const value = await AsyncStorage.getItem('uid').then(value => {
         setUid(value);
-        addProduct('');
+     
       });
     } catch (e) {
       // error reading value
@@ -104,7 +104,7 @@ const Profile = ({navigation}) => {
             borderRadius: 20,
           }}>
           <Text style={{fontWeight: '500', fontSize: 16, color: 'black'}}>
-            Height : {height} cm
+            Height : {data.height} cm
           </Text>
           <Text
             style={{
@@ -113,7 +113,7 @@ const Profile = ({navigation}) => {
               fontSize: 16,
               color: 'black',
             }}>
-            Weight : {weight} kg
+            Weight : {data.weight} kg
           </Text>
         </View>
 
