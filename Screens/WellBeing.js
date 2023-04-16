@@ -1,13 +1,25 @@
-import {StyleSheet, Text, View} from 'react-native';
-import {useState} from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
 import React from 'react';
 import Slider from '@react-native-community/slider';
+import firestore from '@react-native-firebase/firestore'
+import auth from '@react-native-firebase/auth'
 
 const WellBeing = () => {
   const [Water, setWater] = useState('0');
   const [sleep, setsleep] = useState('');
   const [sliding1, setsliding1] = useState('inActive');
   const [sliding, setsliding] = useState('inActive');
+  console.log(Water, sleep)
+
+  const setData = async () => {
+    const uid = auth().currentUser.uid
+    firestore().collection("Users").doc(uid).set({
+      Hydration: Water,
+      Sleep: sleep
+    },
+    {merge: true},)
+  }
 
   return (
     <View
@@ -24,7 +36,7 @@ const WellBeing = () => {
           <Text style={styles.data}> {sliding}</Text>
         </View>
         <Slider
-          style={{width: 300, height: 100}}
+          style={{ width: 300, height: 100 }}
           minimumValue={0}
           maximumValue={10}
           minimumTrackTintColor="skyblue"
@@ -37,14 +49,14 @@ const WellBeing = () => {
         />
       </View>
 
-      <Text style={styles.h}>sleep</Text>
+      <Text style={styles.h}>Sleep</Text>
       <View style={styles.sleep}>
         <View style={styles.btxt}>
           <Text style={styles.data}>{sleep} hours</Text>
           <Text style={styles.data}>{sliding1}</Text>
         </View>
         <Slider
-          style={{width: 300, height: 100}}
+          style={{ width: 300, height: 100 }}
           minimumValue={0}
           maximumValue={12}
           minimumTrackTintColor="purple"
@@ -56,6 +68,9 @@ const WellBeing = () => {
           onSlidingComplete={() => setsliding1('inActive')}
         />
       </View>
+      <TouchableOpacity style={styles.btn} onPress={setData}>
+        <Text>Set </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -66,6 +81,14 @@ const styles = StyleSheet.create({
   h: {
     fontSize: 30,
     fontWeight: 'bold',
+  },
+  btn: {
+    backgroundColor: 'lightgray',
+    borderRadius: 8,
+    width: '90%',
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   water: {
     backgroundColor: 'lightblue',

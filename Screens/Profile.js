@@ -8,13 +8,8 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-
-
+import auth from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore';
-
-
-
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = ({navigation}) => {
@@ -28,44 +23,31 @@ const Profile = ({navigation}) => {
 
   const [uid, setUid] = React.useState('');
   const [data, setdata] = React.useState('');
+  const [height,setHeight] = React.useState('')
+  const [weight,setWeight] = React.useState('')
+  const [Water,setWater] = React.useState('')
+  const [Sleep,setSleep] = React.useState('')
+  
 
   const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('uid').then(value => {
-        setUid(value);
-     
-      });
-    } catch (e) {
-      // error reading value
-      console.log('Error', e.message);
-    }
-  };
+    const uid = auth().currentUser.uid
+    firestore().collection("Users").doc(uid).onSnapshot((snapshot) => {
+      console.log(snapshot.data())
+      const height = snapshot.data().height
+      const weight = snapshot.data().weight
+      const sleep = snapshot.data().Sleep
+      const water = (snapshot.data().Hydration/8)*100
+
+      setHeight(height)
+      setWeight(weight)
+      setWater(water)
+      setSleep(sleep)
+    })
+  }
 
   useEffect(() => {
-    getData();
-    addProduct()
-   
+    getData()
   }, []);
-
-  const addProduct = async data => {
-    console.log(uid);
-   
-    console.log(data)
-    try {
-      await firestore()
-        .collection('Users')
-        .doc(uid)
-        .get()
-        .then(documentSnapshot => {
-          if (documentSnapshot.exists) {
-            console.log('User data: ', documentSnapshot.data());
-            setdata(documentSnapshot.data())
-          }
-        });
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -102,7 +84,7 @@ const Profile = ({navigation}) => {
             borderRadius: 20,
           }}>
           <Text style={{fontWeight: '500', fontSize: 16, color: 'black'}}>
-            Height : {data.height} cm
+            Height : {height} cm
           </Text>
           <Text
             style={{
@@ -111,7 +93,7 @@ const Profile = ({navigation}) => {
               fontSize: 16,
               color: 'black',
             }}>
-            Weight : {data.weight} kg
+            Weight : {weight} kg
           </Text>
         </View>
 
@@ -166,7 +148,7 @@ const Profile = ({navigation}) => {
             color: 'black',
             marginLeft: 60,
           }}>
-          80%
+          {`${Water} %`}
         </Text>
       </View>
       <View
@@ -196,7 +178,7 @@ const Profile = ({navigation}) => {
             color: 'black',
             marginLeft: 20,
           }}>
-          8 hrs
+          {`${Sleep} hrs`}
         </Text>
       </View>
       <Text
