@@ -95,7 +95,7 @@ const Profile = ({navigation}) => {
           style={{
             backgroundColor: 'rgba(50,50,59,0.4)',
             flex: 0,
-            width: 140,
+            width: 180,
             alignItems: 'center',
             height: 120,
             justifyContent: 'center',
@@ -119,7 +119,7 @@ const Profile = ({navigation}) => {
           style={{
             backgroundColor: 'rgba(50,50,59,0.4)',
             flex: 0,
-            width: 140,
+            width: 180,
             alignItems: 'center',
             height: 120,
             justifyContent: 'center',
