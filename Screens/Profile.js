@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect}from 'react';
 import {
   Image,
   StyleSheet,
@@ -8,6 +8,10 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+
+
+import firestore from '@react-native-firebase/firestore';
+
 
 const height = 164;
 const weight = 59;
@@ -109,7 +113,7 @@ const Profile = ({navigation}) => {
               fontSize: 16,
               color: 'black',
             }}>
-            Weight : {data} kg
+            Weight : {weight} kg
           </Text>
         </View>
 

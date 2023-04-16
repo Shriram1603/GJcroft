@@ -9,7 +9,7 @@ import Navbar from '../Components/Nav';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 
-const FitHome = () => {
+const FitHome = ({navigation}) => {
   const [uid, setUid] = React.useState('');
   const [data, setdata] = React.useState('');
 
@@ -27,9 +27,16 @@ const FitHome = () => {
 
   useEffect(() => {
     getData();
-   
-   
-  }, []);
+
+   const unsubscribe = navigation.addListener('focus', () => {
+    getData()
+    addProduct()
+    // Screen was focused
+    // Do something
+  });
+
+
+  }, [navigation]);
 
   const addProduct = async data => {
     console.log(uid);

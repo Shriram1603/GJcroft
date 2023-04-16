@@ -16,7 +16,7 @@ const Timer = () => {
     try {
       const value = await AsyncStorage.getItem('uid').then(value => {
         setUid(value);
-        addProduct('');
+        addProduct(value);
       });
     } catch (e) {
       // error reading value
@@ -33,10 +33,11 @@ const Timer = () => {
     try {
       await firestore()
         .collection('Users')
-        .doc(uid)
+        .doc(data)
         .get()
         .then(documentSnapshot => {
           if (documentSnapshot.exists) {
+            console.log(documentSnapshot.data());
             setCal(documentSnapshot.data().Calories);
           }
         });
@@ -68,8 +69,11 @@ const Timer = () => {
 
   const timerCallbackFunc = timerFlag => {
     // Setting timer flag to finished
-    setCal(Cal + 100);
-    Calories(Cal);
+    console.log('Timer is finished');
+    console.log('Cal is ', Cal);
+    let temp = Number(Cal) + 100;
+    setCal(temp);
+    Calories(temp);
     setTimerEnd(timerFlag);
     navigation.navigate('Exercises');
   };
@@ -79,7 +83,7 @@ const Timer = () => {
       <CountDownTimer
         size={30}
         timestamp={2}
-        timerCallback={timerCallbackFunc}
+        timerCallback={() => timerCallbackFunc()}
         digitStyle={{
           backgroundColor: '#FFF',
           borderWidth: 2,
@@ -135,4 +139,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
   },
-});
+})

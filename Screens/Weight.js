@@ -43,6 +43,7 @@ const Weight = ({navigation}) => {
       await firestore().collection('Users').doc(uid).set(
         {
           weight: data,
+          Calories: 0,
         },
         {merge: true},
       );
