@@ -8,6 +8,7 @@ import Navbar from '../Components/Nav';
 import auth from '@react-native-firebase/auth'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
+import PushNotification from 'react-native-push-notification';
 
 const FitHome = ({ navigation }) => {
   const [uid, setUid] = React.useState('');
@@ -22,11 +23,38 @@ const FitHome = ({ navigation }) => {
     })
   }
 
+  const pushNoti = () => {
+    const uid = auth().currentUser.uid
+    firestore().collection('Users').doc(uid).get()
+      .then(docs => {
+        const water = docs.data().Hydration
+        console.log(water)
+        if(water < 8){
+          PushNotification.localNotification({
+            channelId: 'Fitness-notifications',
+            title: 'Hydration!!',
+            message: "Don't forget to complete your water quota",
+          });
+        }
+       })
+  }
+
   useEffect(() => {
+    PushNotification.createChannel(
+      {
+        channelId: 'Fitness-notifications',
+        channelName: 'Fitness Notifications',
+        channelDescription: 'Notifications for fitness events',
+        importance: 4,
+        vibrate: true,
+      },
+      (created) => {
+        console.log('Fitness channel created');
+      },
+    );
+    pushNoti()
     getCalories()
   }, []);
-
-
 
   return (
     <View style={styles.container}>
@@ -38,7 +66,6 @@ const FitHome = ({ navigation }) => {
             Good learner
           </Text>
         </View>
-
       </View>
       <Motivation />
       <Text
